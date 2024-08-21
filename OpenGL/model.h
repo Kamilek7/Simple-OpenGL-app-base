@@ -3,18 +3,21 @@
 
 #include <json/json.hpp>
 #include "mesh.h"
+#include "import.h"
+
 using json = nlohmann::json;
 
-class Model
+class glModel
 {
 public:
-	Model() {};
-	Model(const char* filer);
+	glModel() {};
+	glModel(const char* filer, modelImporter* importer);
 	void updatePosition(Shader& shader, glm::vec3 position);
 	void draw(Shader& shader, Camera& camera);
 private:
 	const char* file;
 	std::vector<unsigned char> data;
+	
 	json JSON;
 
 	std::vector<Mesh> meshes;

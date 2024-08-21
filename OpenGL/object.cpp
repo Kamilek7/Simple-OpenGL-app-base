@@ -1,13 +1,13 @@
 #include "object.h"
 
-Object::Object(const char* name)
+ingameObject::ingameObject(const char* name, modelImporter* importer)
 {
 	position = { 0.0,0.0,0.0 };
 	time = 0.0;
-	model = Model(name);
+	model = glModel(name, importer);
 }
 
-void Object::process(float dt, Shader& shader, Camera &camera)
+void ingameObject::process(float dt, Shader& shader, Camera &camera)
 {
 	time += dt;
 	position.x = sin(time);

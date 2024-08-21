@@ -19,8 +19,8 @@ GameComponents::GameComponents()
 	glCullFace(GL_FRONT);
 	glFrontFace(GL_CCW);
 	camera = Camera(WINDOW_WIDTH, WINDOW_HEIGHT, glm::vec3(0.0f, 0.2f, 0.5f));
-	objects.push_back(Object("resources/sbunny/scene.gltf"));
-	objects.push_back(Object("resources/statue/scene.gltf"));
+	objects.push_back(ingameObject("resources/sbunny/scene.gltf", &importer));
+	objects.push_back(ingameObject("resources/statue/scene.gltf", &importer));
 }
 
 void GameComponents::render()

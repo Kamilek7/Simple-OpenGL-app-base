@@ -2,14 +2,14 @@
 #define OBJECT_H
 
 #include "model.h"
-class Object
+class ingameObject
 {
 	float time;
-	Model model;
+	glModel model;
 	glm::vec3 position;
 
 public:
-	Object(const char* name);
+	ingameObject(const char* name, modelImporter *importer);
 	void process(float dt, Shader& shader, Camera& camera);
 };
 #endif

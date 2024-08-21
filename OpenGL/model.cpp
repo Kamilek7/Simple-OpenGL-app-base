@@ -1,21 +1,23 @@
 #include "model.h"
 
-Model::Model(const char* filer)
+glModel::glModel(const char* filer, modelImporter* importer)
 {
 	std::string output = getContents(filer);
 	JSON = json::parse(output);
 
 	file = filer;
 	data = getData();
+	
+	importer->loadModel(filer);
 
 	crawlNode(0);
 }
 
-void Model::updatePosition(Shader& shader, glm::vec3 position)
+void glModel::updatePosition(Shader& shader, glm::vec3 position)
 {
 	glUniform3f(glGetUniformLocation(shader.program, "additionalPosition"), position.x, position.y, position.z);
 }
-void Model::draw(Shader& shader, Camera& camera)
+void glModel::draw(Shader& shader, Camera& camera)
 {
 	for (unsigned int i = 0; i < meshes.size(); i++)
 	{
@@ -23,7 +25,7 @@ void Model::draw(Shader& shader, Camera& camera)
 	}
 }
 
-std::vector<unsigned char> Model::getData()
+std::vector<unsigned char> glModel::getData()
 {
 	std::string bytesText;
 	std::string uri = JSON["buffers"][0]["uri"];
@@ -35,7 +37,7 @@ std::vector<unsigned char> Model::getData()
 	std::vector<unsigned char> data(bytesText.begin(), bytesText.end());
 	return data;
 }
-std::vector<float> Model::getFloats(json accessor)
+std::vector<float> glModel::getFloats(json accessor)
 {
 	std::vector <float> floatVec;
 
@@ -63,7 +65,7 @@ std::vector<float> Model::getFloats(json accessor)
 	}
 	return floatVec;
 }
-std::vector<GLuint> Model::getIndices(json accessor)
+std::vector<GLuint> glModel::getIndices(json accessor)
 {
 	std::vector<GLuint> indices;
 	unsigned int buffViewInd = accessor.value("bufferView", 0);
@@ -110,7 +112,7 @@ std::vector<GLuint> Model::getIndices(json accessor)
 	return indices;
  }
 
-std::vector<Texture> Model::getTextures()
+std::vector<Texture> glModel::getTextures()
 {
 	std::vector<Texture> textures;
 	std::string fileStr = std::string(file);
@@ -152,21 +154,21 @@ std::vector<Texture> Model::getTextures()
 	return textures;
 }
 
-std::vector <glm::vec2> Model::groupFloatVec2(std::vector<float> floatVec)
+std::vector <glm::vec2> glModel::groupFloatVec2(std::vector<float> floatVec)
 {
 	std::vector <glm::vec2> vectors;
 	for (int i = 0; i < floatVec.size(); i+=2)
 		vectors.push_back(glm::vec2(floatVec[i+1], floatVec[i]));
 	return vectors;
 }
-std::vector <glm::vec3> Model::groupFloatVec3(std::vector<float> floatVec)
+std::vector <glm::vec3> glModel::groupFloatVec3(std::vector<float> floatVec)
 {
 	std::vector <glm::vec3> vectors;
 	for (int i = 0; i < floatVec.size(); i+=3)
 		vectors.push_back(glm::vec3(floatVec[i+2], floatVec[i+1] , floatVec[i]));
 	return vectors;
 }
-std::vector <glm::vec4> Model::groupFloatVec4(std::vector<float> floatVec)
+std::vector <glm::vec4> glModel::groupFloatVec4(std::vector<float> floatVec)
 {
 	std::vector <glm::vec4> vectors;
 	for (int i = 0; i < floatVec.size(); i+=4)
@@ -174,7 +176,7 @@ std::vector <glm::vec4> Model::groupFloatVec4(std::vector<float> floatVec)
 	return vectors;
 }
 
-std::vector<Vertex> Model::assembleVert(std::vector<glm::vec3> positions, std::vector<glm::vec3> normals, std::vector<glm::vec2>texUV)
+std::vector<Vertex> glModel::assembleVert(std::vector<glm::vec3> positions, std::vector<glm::vec3> normals, std::vector<glm::vec2>texUV)
 {
 	std::vector<Vertex> vertices;
 	for (unsigned int i = 0; i < positions.size(); i++)
@@ -182,12 +184,14 @@ std::vector<Vertex> Model::assembleVert(std::vector<glm::vec3> positions, std::v
 	return vertices;
 }
 
-void Model::loadMesh(unsigned int indMesh)
+void glModel::loadMesh(unsigned int indMesh)
 {
 	unsigned int posInd = JSON["meshes"][indMesh]["primitives"][0]["attributes"]["POSITION"];
 	unsigned int normalInd = JSON["meshes"][indMesh]["primitives"][0]["attributes"]["NORMAL"];
 	unsigned int texInd = JSON["meshes"][indMesh]["primitives"][0]["attributes"]["TEXCOORD_0"];
 	unsigned int indInd = JSON["meshes"][indMesh]["primitives"][0]["indices"];
+
+	
 
 	std::vector <float> posVec = getFloats(JSON["accessors"][posInd]);
 	std::vector <float> normalVec = getFloats(JSON["accessors"][normalInd]);
@@ -204,7 +208,7 @@ void Model::loadMesh(unsigned int indMesh)
 	meshes.push_back(Mesh(vertices, indices, textures));
 }
 
-void Model::crawlNode(unsigned int index, glm::mat4 matrix)
+void glModel::crawlNode(unsigned int index, glm::mat4 matrix)
 {
 	json node = JSON["nodes"][index];
 	glm::vec3 trans = glm::vec3(0.0f, 0.0f, 0.0f);
