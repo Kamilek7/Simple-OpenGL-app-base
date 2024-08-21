@@ -9,6 +9,7 @@ class Texture
 public:
 	GLuint texture;
 	const char* type;
+	const char* dir;
 	GLuint unit;
 
 	Texture(const char* file, const char* texType, GLuint slot);
