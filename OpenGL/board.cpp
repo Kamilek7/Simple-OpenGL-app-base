@@ -19,8 +19,8 @@ GameComponents::GameComponents()
 	glCullFace(GL_FRONT);
 	glFrontFace(GL_CW);
 	camera = Camera(WINDOW_WIDTH, WINDOW_HEIGHT, glm::vec3(0.0f, 0.2f, 0.5f));
-	objects.push_back(ingameObject("resources/sbunny/scene.gltf", &importer));
-	objects.push_back(ingameObject("resources/monke/testglb.gltf", &importer));
+	objects.push_back(new ingameObject("resources/sbunny/scene.gltf", &importer));
+	objects.push_back(new ingameObject("resources/monke/testglb.gltf", &importer));
 }
 
 void GameComponents::render()
@@ -39,7 +39,7 @@ void GameComponents::render()
 	duration = 0;
 	for (int i = 0; i < objects.size(); i++)
 	{
-		objects[i].process(fpsTime, shaderProgram, camera);
+		objects[i]->process(fpsTime, shaderProgram, camera);
 	}
 	camera.inputs(window, (float)fpsTime);
 	Clock += (float)fpsTime;

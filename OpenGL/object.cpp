@@ -2,15 +2,13 @@
 
 ingameObject::ingameObject(const char* name, modelImporter* importer)
 {
-	position = { 0.0,0.0,0.0 };
-	time = 0.0;
-	model = glModel(name, importer);
+	this->time = 0.0;
+	this->model = glModel(name, importer);
 }
 
 void ingameObject::process(float dt, Shader& shader, Camera &camera)
 {
-	time += dt;
-	position.x = sin(time);
-	model.updatePosition(shader, position);
-	model.draw(shader, camera);
+	this->time += dt;
+	this->model.translation.x = sin(time);
+	this->model.draw(shader, camera);
 }

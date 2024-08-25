@@ -9,10 +9,12 @@ class glModel
 public:
 	glModel() {};
 	glModel(const char* filer, modelImporter* importer);
-	void updatePosition(Shader& shader, glm::vec3 position);
 	void draw(Shader& shader, Camera& camera);
-private:
-	std::vector<Mesh> meshes;
+	glm::mat4 getMatrix();
 
+	std::vector<Mesh> meshes;
+	glm::vec3 translation;
+	glm::quat rotation;
+	glm::vec3 scale;
 };
 #endif

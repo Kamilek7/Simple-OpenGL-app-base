@@ -19,7 +19,7 @@ Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<GLuint>& indices, std::vec
 	EBO.unbind();
 }
 
-void Mesh::Draw(Shader& shader, Camera& camera, glm::mat4 matrix, glm::vec3 trans, glm::quat rot, glm::vec3 scale)
+void Mesh::Draw(Shader& shader, Camera& camera, glm::mat4 matrix)
 {
 	shader.on();
 	vao.bind();
@@ -42,17 +42,7 @@ void Mesh::Draw(Shader& shader, Camera& camera, glm::mat4 matrix, glm::vec3 tran
 	}
 	glUniform3f(glGetUniformLocation(shader.program, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
 	camera.matrix(shader, "camMatrix");
-	glm::mat4 t = glm::mat4(1.0f);
-	glm::mat4 r = glm::mat4(1.0f);
-	glm::mat4 s = glm::mat4(1.0f);
 
-	t = glm::translate(t, trans);
-	r = glm::mat4_cast(rot);
-	s = glm::scale(s, scale);
-
-	glUniformMatrix4fv(glGetUniformLocation(shader.program, "translation"), 1, GL_FALSE, glm::value_ptr(t));
-	glUniformMatrix4fv(glGetUniformLocation(shader.program, "rotation"), 1, GL_FALSE, glm::value_ptr(r));
-	glUniformMatrix4fv(glGetUniformLocation(shader.program, "scale"), 1, GL_FALSE, glm::value_ptr(s));
 	glUniformMatrix4fv(glGetUniformLocation(shader.program, "model"), 1, GL_FALSE, glm::value_ptr(matrix));
 
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);

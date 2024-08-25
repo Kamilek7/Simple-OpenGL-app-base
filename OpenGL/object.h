@@ -6,7 +6,6 @@ class ingameObject
 {
 	float time;
 	glModel model;
-	glm::vec3 position;
 
 public:
 	ingameObject(const char* name, modelImporter *importer);
